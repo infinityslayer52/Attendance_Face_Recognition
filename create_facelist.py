@@ -1,5 +1,5 @@
 import requests
-import pprint
+# import pprint
 
 params_create = {
     'faceListId': ''
@@ -16,12 +16,12 @@ body_create = {
 
 def create():
     print('Enter the name of the group')
-    groupName = input('Note- Name of the group should be in small letters and should not contain spaces. Hyphens and underscores are allowed.')
-    params_create['faceListId'] = groupName
-    body_create['name'] = groupName
+    groupname = input('Note- Name of the group should be in small letters and should not contain spaces. Hyphens and underscores are allowed.')
+    params_create['faceListId'] = groupname
+    body_create['name'] = groupname
     r = requests.put(url='https://westcentralus.api.cognitive.microsoft.com/face/v1.0/facelists/{faceListId}', json=body_create, headers=headers_create, params=params_create)
     # pprint.pprint(r.status_code)
     if int(r.status_code) == 200:
-        print('Group named ', groupName, ' created.')
+        print('Group named ', groupname, ' created.')
     else:
         print('Group not Created. Error-', r.status_code)
