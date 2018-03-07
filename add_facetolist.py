@@ -30,12 +30,23 @@ def add():
         print('The groups are as follows-')
         for lists in range(0, len(r.json())):
             pprint.pprint(r.json()[lists]['faceListId'])
-        groupName = input('Enter the name of the group to which a student has to be added.')
-        params_add['faceListId'] = groupName
-        file = input('Enter the location of the photo of the student to be added.')
-        img = open(file, 'rb').read()
-        name = names[file[-6:]]
-        params_add['userData'] = name
-        s = requests.post(url='https://westcentralus.api.cognitive.microsoft.com/face/v1.0/facelists/{faceListId}/persistedFaces', params=params_add, data=img, headers=headers_add)
-        # pprint.pprint(s.json())
-        print(name, ' was added to the group ', groupName)
+        groupname = input('Enter the name of the group to which a student has to be added.')
+        x = 0
+        for i in range(0, len(r.json())):
+            if groupname == r.json()[i]['faceListId']:
+                x = 1
+                break
+            else:
+                continue
+        if x == 1:
+            params_add['faceListId'] = groupname
+            file = input('Enter the location of the photo of the student to be added.')
+            img = open(file, 'rb').read()
+            name = file[-6:-4]
+            params_add['userData'] = name
+            s = requests.post(url='https://westcentralus.api.cognitive.microsoft.com/face/v1.0/facelists/{faceListId}/persistedFaces', params=params_add, data=img, headers=headers_add)
+            # pprint.pprint(s.json())
+            print(name, ' was added to the group ', groupname)
+        else:
+            print("The group name that you entered was not found. PLease enter a valid group name.")
+            add()
