@@ -2,9 +2,6 @@ import glob
 import requests
 import pprint
 
-# initializing required variables
-# directory='.\known_images\known_images1'
-
 names = {"01.jpg": "1", "02.jpg": "2", "03.jpg": "3", "04.jpg": "4", "05.jpg": "5", "06.jpg": "6", "07.jpg": "7",
          "08.jpg": "8", "09.jpg": "9",
          "10.jpg": "10", "11.jpg": "11", "12.jpg": "12", "13.jpg": "13", "14.jpg": "14", "15.jpg": "15", "16.jpg": "16",
@@ -35,14 +32,26 @@ def add_faces():
         print('The groups are as follows-')
         for lists in range(0, len(s.json())):
             pprint.pprint(s.json()[lists]['faceListId'])
-        groupName = input('Enter the name of the group to which the students have to be added')
-        params_add['faceListId'] = groupName
-        directory = input('Enter the directory of the source folder containing the photos of the students')
-        directory += '\*jpg'
-        for file in glob.glob(directory):
-            img = open(file, 'rb').read()
-            params_add['userData'] = names[file[-6:]]
-            r = requests.post(url='https://westcentralus.api.cognitive.microsoft.com/face/v1.0/facelists/{faceListId}/persistedFaces', params=params_add, data=img, headers=headers_add)
-            # pprint.pprint(r.json())
-            c += 1
-        print(c, ' students added to ', groupName)
+        groupname = input('Enter the name of the group to which the students have to be added')
+        x = 0
+        for i in range(0, len(s.json())):
+            if groupname == s.json()[i]['faceListId']:
+                x = 1
+                break
+            else:
+                continue
+        if x == 1:
+            params_add['faceListId'] = groupname
+            directory = input('Enter the directory of the source folder containing the photos of the students')
+            directory += '\*jpg'
+            print('Adding students to group...')
+            for file in glob.glob(directory):
+                img = open(file, 'rb').read()
+                params_add['userData'] = file[-6:-4]
+                r = requests.post(url='https://westcentralus.api.cognitive.microsoft.com/face/v1.0/facelists/{faceListId}/persistedFaces', params=params_add, data=img, headers=headers_add)
+                # pprint.pprint(r.json())
+                c += 1
+            print(c, ' students added to ', groupname)
+        else:
+            print("The group name that you entered was not found. PLease enter a valid group name.")
+            add_faces()
