@@ -31,25 +31,35 @@ def delete():
         print('The groups are as follows-')
         for lists in range(0, len(t.json())):
             pprint.pprint(t.json()[lists]['faceListId'])
-        groupName = input('Enter the name of the group from which a student has to be deleted')
-        params_delete['faceListId'] = groupName
-        params_get['faceListId'] = groupName
-        r = requests.get(url='https://westcentralus.api.cognitive.microsoft.com/face/v1.0/facelists/{faceListId}', params=params_get, headers=headers_get)
-        # pprint.pprint(r)
-        if len(r.json()['persistedFaces']) == 0:
-            print('No students present in this group.')
+        groupname = input('Enter the name of the group from which a student has to be deleted')
+        x = 0
+        for i in range(0, len(t.json())):
+            if groupname == t.json()[i]['faceListId']:
+                x = 1
+                break
+            else:
+                continue
+        if x == 1:
+            params_delete['faceListId'] = groupname
+            params_get['faceListId'] = groupname
+            r = requests.get(url='https://westcentralus.api.cognitive.microsoft.com/face/v1.0/facelists/{faceListId}', params=params_get, headers=headers_get)
+            # pprint.pprint(r)
+            if len(r.json()['persistedFaces']) == 0:
+                print('No students present in this group.')
+            else:
+                print('The students present in this group are- ')
+                for face in range(0, len(r.json()['persistedFaces'])):
+                    pprint.pprint(r.json()['persistedFaces'][face]['userData'])
+                faceid = input('Enter the name of the student who has to be deleted from this list')
+                for face in range(0, len(r.json()['persistedFaces'])):
+                    if faceid == r.json()['persistedFaces'][face]['userData']:
+                        params_delete['persistedFaceId'] = r.json()['persistedFaces'][face]['persistedFaceId']
+                        s = requests.delete(url='https://westcentralus.api.cognitive.microsoft.com/face/v1.0/facelists/{faceListId}/persistedFaces/{persistedFaceId}', params=params_delete, headers=headers_delete)
+                        # pprint.pprint(s)
+                        if int(s.status_code) == 200:
+                            print(faceid, ' was deleted from the group ', groupname)
+                        else:
+                            print(faceid, ' was not Deleted. Error-', r.status_code)
         else:
-            print('The students present in this group are- ')
-            for face in range(0, len(r.json()['persistedFaces'])):
-                pprint.pprint(r.json()['persistedFaces'][face]['userData'])
-            faceId = input('Enter the name of the student who has to be deleted from this list')
-            for face in range(0,len(r.json()['persistedFaces'])):
-                if faceId == r.json()['persistedFaces'][face]['userData']:
-                    params_delete['persistedFaceId'] = r.json()['persistedFaces'][face]['persistedFaceId']
-                    s = requests.delete(url='https://westcentralus.api.cognitive.microsoft.com/face/v1.0/facelists/{faceListId}/persistedFaces/{persistedFaceId}', params=params_delete, headers=headers_delete)
-                    # pprint.pprint(s)
-                    if int(s.status_code) == 200:
-                        print(faceId, ' was deleted from the group ', groupName)
-                    else:
-                        print(faceId, ' was not Deleted. Error-', r.status_code)
-                    break
+            print("The group name that you entered was not found. PLease enter a valid group name.")
+            delete()
