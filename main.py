@@ -15,23 +15,26 @@ print('6. Delete a student from a group.')
 print('7. Delete a group.')
 n = True
 while n:
-    x = input('Choose a valid option')
-    if x == '1':
-        create_facelist.create()
-    elif x == '2':
-        add_facestolist.add_faces()
-    elif x == '3':
-        add_facetolist.add()
-    elif x == '4':
-        get_facelist.listed()
-    elif x == '5':
-        search_infacelists.search()
-    elif x == '6':
-        delete_face.delete()
-    elif x == '7':
-        delete_facelist.delete()
-    else:
-        print('Please enter a valid option.')
+    try:
+        x = input('Choose a valid option')
+        if x == '1':
+            create_facelist.create()
+        elif x == '2':
+            add_facestolist.add_faces()
+        elif x == '3':
+            add_facetolist.add()
+        elif x == '4':
+            get_facelist.listed()
+        elif x == '5':
+            search_infacelists.search()
+        elif x == '6':
+            delete_face.delete()
+        elif x == '7':
+            delete_facelist.delete()
+        else:
+            print('Please enter a valid option.')
+    except Exception as e:
+        print(e)
     r = input('Do you want to perform another task?(y/n)')
     if r == 'n' or r == 'N':
         n = False
@@ -39,4 +42,5 @@ while n:
     elif r == 'y' or r == 'Y':
         continue
     else:
+        n = False
         print('Exiting...')
